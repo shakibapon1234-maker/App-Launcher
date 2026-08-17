@@ -8,30 +8,14 @@ const runningProcesses = {};
 
 // --- GLOBAL CRASH GUARDS ---
 process.on('uncaughtException', (err) => {
-  console.error('[Shakib Hub] Uncaught Exception (server kept alive):', err.message);
+  console.error('[Shakib Hub] Uncaught Exception:', err.message);
 });
 process.on('unhandledRejection', (reason) => {
-  console.error('[Shakib Hub] Unhandled Rejection (server kept alive):', reason);
+  console.error('[Shakib Hub] Unhandled Rejection:', reason);
 });
 
 // Full Project Registry with Dual-Mode (Desktop & Browser) Support
 const APPS = [
-  {
-    id: 'photo-studio',
-    name: 'Photo & 3D Text Studio',
-    banglaName: 'ফটো ও ৩D টেক্সট স্টুডিও',
-    hasDesktop: true,
-    hasBrowser: true,
-    badge: 'Desktop & Web',
-    category: 'creative',
-    icon: '📷',
-    accentColor: '#f59e0b',
-    description: 'Advanced photo editing, AI background removal, filter presets, and full 3D extruded vector text studio.',
-    path: path.resolve(__dirname, '../Warisha Fasion/photo and text editor/photo-and-text-editor'),
-    launchCmd: 'start_desktop.bat',
-    webPort: 4200,
-    webUrl: 'http://localhost:4200/index.html'
-  },
   {
     id: 'video-editor',
     name: 'Video Editor Pro',
@@ -43,26 +27,45 @@ const APPS = [
     icon: '🎬',
     accentColor: '#38bdf8',
     description: 'Multi-track video editing, AI Bangla voice typing, automated subtitle generator, transitions, and 3D visual templates.',
-    path: path.resolve(__dirname, '../Video-Editor'),
+    path: path.resolve(__dirname, '../../Video-Editor'),
     launchCmd: 'start.bat',
     webPort: 4000,
-    webUrl: 'http://localhost:4000'
+    webUrl: 'https://shakibapon1234-maker.github.io/Video-Editor/',
+    localUrl: 'http://localhost:4000'
+  },
+  {
+    id: 'photo-studio',
+    name: 'Photo & 3D Text Studio',
+    banglaName: 'ফটো ও ৩D টেক্সট স্টুডিও',
+    hasDesktop: true,
+    hasBrowser: true,
+    badge: 'Desktop & Web',
+    category: 'creative',
+    icon: '📷',
+    accentColor: '#f59e0b',
+    description: 'Advanced photo editing, AI background removal, filter presets, and full 3D extruded vector text studio.',
+    path: path.resolve(__dirname, '../../Warisha Fasion/photo and text editor/photo-and-text-editor'),
+    launchCmd: 'start_desktop.bat',
+    webPort: 4200,
+    webUrl: 'https://shakibapon1234-maker.github.io/photo-and-text-editor/',
+    localUrl: 'http://localhost:4200/index.html'
   },
   {
     id: 'pdf-desktop',
     name: 'Antigravity PDF Pro',
-    banglaName: 'অ্যান্টিগ্র্যাভিটি পিডিএফ প্রো (ডেস্কটপ)',
+    banglaName: 'অ্যান্টিগ্র্যাভিটি পিডিএফ প্রো',
     hasDesktop: true,
-    hasBrowser: false,
-    badge: 'Desktop Pro',
+    hasBrowser: true,
+    badge: 'Web & Desktop',
     category: 'document',
     icon: '📑',
     accentColor: '#ef4444',
     description: 'Professional desktop PDF studio: advanced page editing, offline conversion, watermark, e-sign, and OCR integration.',
-    path: path.resolve(__dirname, '../../Antigravity-PDF-Pro-1'),
+    path: path.resolve(__dirname, '../../../Antigravity-PDF-Pro-1'),
     launchCmd: 'RUN_APP.bat',
     webPort: 5173,
-    webUrl: 'http://localhost:5173'
+    webUrl: 'https://shakibapon1234-maker.github.io/Antigravity-PDF-Pro-1/',
+    localUrl: 'http://localhost:5173'
   },
   {
     id: 'pdf-suite',
@@ -75,9 +78,10 @@ const APPS = [
     icon: '📄',
     accentColor: '#fb7185',
     description: 'Cloud-ready PDF tools suite: fast merge, split, annotate, signature, watermark, and PDF-to-image converter.',
-    path: path.resolve(__dirname, '../PDF-WEBSITE'),
+    path: path.resolve(__dirname, '../../PDF-WEBSITE'),
     webPort: 3456,
-    webUrl: 'http://localhost:3456/index.html'
+    webUrl: 'https://shakibapon1234-maker.github.io/PDF-WEBSITE/',
+    localUrl: 'http://localhost:3456/index.html'
   },
   {
     id: 'warisha-fashion',
@@ -90,9 +94,10 @@ const APPS = [
     icon: '👗',
     accentColor: '#ec4899',
     description: 'Complete ERP suite: sales, purchase catalog, cash ledger, automated invoice generator, inventory audit, and analytics.',
-    path: path.resolve(__dirname, '../Warisha Fasion/Warisha-Fashion'),
+    path: path.resolve(__dirname, '../../Warisha Fasion/Warisha-Fashion'),
     webPort: 3500,
-    webUrl: 'http://localhost:3500/index.html'
+    webUrl: 'https://shakibapon1234-maker.github.io/Warisha-Fashion/',
+    localUrl: 'http://localhost:3500/index.html'
   },
   {
     id: 'wings-fly-academy',
@@ -105,9 +110,10 @@ const APPS = [
     icon: '✈️',
     accentColor: '#0ea5e9',
     description: 'Aviation training academy platform: student portal, exam system, routine management, certificate verification, and CRM.',
-    path: path.resolve(__dirname, '../../wings-fly-clean'),
+    path: path.resolve(__dirname, '../../../wings-fly-clean'),
     webPort: 3600,
-    webUrl: 'http://localhost:3600/index.html'
+    webUrl: 'https://shakibapon1234-maker.github.io/Wings-Fly-Academy-1/',
+    localUrl: 'http://localhost:3600/index.html'
   },
   {
     id: 'wings-fly-public',
@@ -120,9 +126,10 @@ const APPS = [
     icon: '🌐',
     accentColor: '#06b6d4',
     description: 'Official public-facing portal for Wings Fly: course listings, admissions, student dashboard, and news updates.',
-    path: path.resolve(__dirname, '../../Wings Fly Website/Wings-Fly-Public-Site'),
+    path: path.resolve(__dirname, '../../../Wings Fly Website/Wings-Fly-Public-Site'),
     webPort: 3700,
-    webUrl: 'http://localhost:3700/index.html'
+    webUrl: 'https://shakibapon1234-maker.github.io/Wings-Fly-Public-Site/',
+    localUrl: 'http://localhost:3700/index.html'
   },
   {
     id: 'acade-flow',
@@ -135,9 +142,26 @@ const APPS = [
     icon: '🎓',
     accentColor: '#10b981',
     description: 'Next-generation education and student learning dashboard, curriculum management, and online academy portal.',
-    path: path.resolve(__dirname, '../acade-flow'),
+    path: path.resolve(__dirname, '../../acade-flow'),
     webPort: 3780,
-    webUrl: 'http://localhost:3780/index.html'
+    webUrl: 'https://shakibapon1234-maker.github.io/acade-flow/',
+    localUrl: 'http://localhost:3780/index.html'
+  },
+  {
+    id: 'wings-fly-helper',
+    name: 'Wings Fly 1 Helper',
+    banglaName: 'উইংস ফ্লাই ১ হেল্পার ও টুলবক্স',
+    hasDesktop: false,
+    hasBrowser: true,
+    badge: 'Tools & Files',
+    category: 'creative',
+    icon: '🛠️',
+    accentColor: '#6366f1',
+    description: 'Essential developer tools, credential manager, credentials vault, voice tools, and reusable project assets.',
+    path: path.resolve(__dirname, '../../Wings-Fly-1-helper'),
+    webPort: 3990,
+    webUrl: 'https://github.com/shakibapon1234-maker/Wings-Fly-1-helper',
+    localUrl: 'http://localhost:3990/website/index.html'
   },
   {
     id: 'wings-fly-foundation',
@@ -147,19 +171,40 @@ const APPS = [
     hasBrowser: true,
     badge: 'Ledger & Accounts',
     category: 'finance',
-    icon: '🕊️',
+    icon: '🤝',
     accentColor: '#8b5cf6',
     description: 'Client ledger management, charitable accounts, donor records, and transparent financial reporting system.',
-    path: path.resolve(__dirname, '../Wings-Fly-Foundation'),
+    path: path.resolve(__dirname, '../../Wings-Fly-Foundation'),
     webPort: 3890,
-    webUrl: 'http://localhost:3890/index.html'
+    webUrl: 'https://shakibapon1234-maker.github.io/Wings-Fly-Foundation/',
+    localUrl: 'http://localhost:3890/index.html'
+  },
+  {
+    id: 'voice-typing',
+    name: 'AI Voice Typing',
+    banglaName: 'এআই ভয়েস টাইপিং',
+    hasDesktop: false,
+    hasBrowser: true,
+    badge: 'AI Studio',
+    category: 'creative',
+    icon: '🎙️',
+    accentColor: '#f97316',
+    description: 'High-speed automated speech-to-text and AI Bangla speech transcription engine.',
+    path: path.resolve(__dirname, '../../Voice-Typing'),
+    webPort: 3950,
+    webUrl: 'https://shakibapon1234-maker.github.io/Voice-Typing/',
+    localUrl: 'http://localhost:3950/index.html'
   }
 ];
 
 // Helper: static file server for a web app directory
 const miniServers = {};
 function ensureMiniServer(app) {
-  if (miniServers[app.id]) return; // already running
+  if (miniServers[app.id]) return;
+  if (!fs.existsSync(app.path)) {
+    console.log(`[Shakib Hub] Local folder ${app.path} not found, will rely on cloud url.`);
+    return;
+  }
   const srv = http.createServer((req, res) => {
     let reqUrl = decodeURI(req.url.split('?')[0]);
     if (reqUrl === '/' || reqUrl === '') reqUrl = '/index.html';
@@ -190,24 +235,17 @@ function ensureMiniServer(app) {
       };
       res.writeHead(200, { 'Content-Type': mimeMap[ext] || 'application/octet-stream' });
       const stream = fs.createReadStream(filePath);
-      stream.on('error', (streamErr) => {
-        console.error('[Shakib Hub] Stream error:', streamErr.message);
-        if (!res.headersSent) {
-          res.writeHead(500, { 'Content-Type': 'text/plain' });
-        }
-        res.end('Internal error reading file.');
+      stream.on('error', () => {
+        if (!res.headersSent) res.writeHead(500);
+        res.end('Internal error.');
       });
       stream.pipe(res);
     });
   });
 
-  // If port already in use (e.g. video editor already running), just mark and move on
   srv.on('error', (err) => {
     if (err.code === 'EADDRINUSE') {
-      console.log(`[Shakib Hub] Port ${app.webPort} already in use for ${app.name} — using existing server.`);
-      miniServers[app.id] = true; // mark as handled so we don't retry
-    } else {
-      console.error(`[Shakib Hub] Server error for ${app.name}:`, err.message);
+      miniServers[app.id] = true;
     }
   });
 
@@ -217,14 +255,13 @@ function ensureMiniServer(app) {
   miniServers[app.id] = srv;
 }
 
-// Launch application (Desktop Mode vs Browser Mode)
 function launchApp(appId, mode, callback) {
   const app = APPS.find(a => a.id === appId);
   if (!app) return callback(new Error('App not found'));
 
   const isDesktop = mode === 'desktop' && app.hasDesktop;
 
-  if (isDesktop) {
+  if (isDesktop && app.launchCmd) {
     const batPath = path.join(app.path, app.launchCmd);
     if (fs.existsSync(batPath)) {
       try {
@@ -238,51 +275,48 @@ function launchApp(appId, mode, callback) {
         return callback(null, { 
           success: true, 
           mode: 'desktop',
-          message: `${app.name} (ডেস্কটপ মোড) চালু হচ্ছে...` 
+          message: `${app.name} ডেস্কটপে চালু হচ্ছে...` 
         });
       } catch (err) {
-        console.error(`[Shakib Hub] Desktop spawn error for ${app.name}:`, err.message);
+        console.error(`[Shakib Hub] Launch error:`, err.message);
       }
-    } else {
-      console.warn(`[Shakib Hub] .bat not found at: ${batPath}`);
     }
   }
 
-  // Browser mode: ensure mini-server running and return webUrl
   ensureMiniServer(app);
   runningProcesses[appId] = true;
   return callback(null, { 
     success: true, 
     mode: 'browser',
     webUrl: app.webUrl,
-    message: `${app.name} ব্রাউজারে খোলা হচ্ছে...` 
+    message: `${app.name} ওপেন হচ্ছে...` 
   });
 }
 
-// Open folder in Windows Explorer
 function openFolder(appId, callback) {
   const app = APPS.find(a => a.id === appId);
   if (!app) return callback(new Error('App not found'));
   
+  if (!fs.existsSync(app.path)) {
+    return callback(new Error('ফোল্ডার পাওয়া যায়নি'));
+  }
+
   try {
     const child = spawn('explorer.exe', [app.path], {
       detached: true,
       stdio: 'ignore'
     });
     child.unref();
-    return callback(null, { success: true, message: `${app.name} ফোল্ডার খোলা হয়েছে।` });
+    return callback(null, { success: true, message: `${app.name} ফোল্ডার ওপেন হয়েছে` });
   } catch (err) {
-    console.error('[Shakib Hub] Folder open error:', err.message);
     return callback(err);
   }
 }
 
-// Main Hub Server
 const server = http.createServer((req, res) => {
   const parsedUrl = new URL(req.url, `http://localhost:${PORT}`);
   const pathname = parsedUrl.pathname;
 
-  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -293,7 +327,6 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // API Routes
   if (pathname === '/api/apps' && req.method === 'GET') {
     const appList = APPS.map(a => ({
       ...a,
@@ -344,7 +377,6 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Static Frontend Files
   let filePath = path.join(__dirname, pathname === '/' ? 'index.html' : pathname);
   fs.stat(filePath, (err, stat) => {
     const finalPath = (err || !stat.isFile()) ? path.join(__dirname, 'index.html') : filePath;
@@ -360,8 +392,7 @@ const server = http.createServer((req, res) => {
     };
     res.writeHead(200, { 'Content-Type': mimeMap[ext] || 'text/html' });
     const stream = fs.createReadStream(finalPath);
-    stream.on('error', (se) => {
-      console.error('[Shakib Hub] Static file error:', se.message);
+    stream.on('error', () => {
       if (!res.headersSent) res.writeHead(500);
       res.end('Error serving file.');
     });
@@ -371,7 +402,7 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log(`=======================================================`);
-  console.log(`       🚀 Shakib Studio Hub is running!                `);
-  console.log(`       URL: http://localhost:${PORT}                   `);
+  console.log(`       🚀 Shakib Studio Hub is running!               `);
+  console.log(`       URL: http://localhost:${PORT}                  `);
   console.log(`=======================================================`);
 });

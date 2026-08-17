@@ -19,7 +19,7 @@ const toastContainer = document.getElementById('toastContainer');
 const bookmarkModal = document.getElementById('bookmarkModal');
 const bookmarkCountEl = document.getElementById('bookmarkCount');
 
-// ==================== TOAST ====================
+// ==================== TOAST NOTIFICATION ====================
 function showToast(message, type = 'info') {
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
@@ -47,21 +47,8 @@ function showSection(section) {
   }
 }
 
-// Built-in Static App Registry for Cloud / GitHub Pages Fallback
+// ==================== 100% GITHUB CLOUD APPS REGISTRY ====================
 const DEFAULT_APPS_FALLBACK = [
-  {
-    id: 'photo-studio',
-    name: 'Photo & 3D Text Studio',
-    banglaName: 'ফটো ও ৩D টেক্সট স্টুডিও',
-    hasDesktop: true,
-    hasBrowser: true,
-    badge: 'Desktop & Web',
-    category: 'creative',
-    icon: '📷',
-    accentColor: '#f59e0b',
-    description: 'Advanced photo editing, AI background removal, filter presets, and full 3D extruded vector text studio.',
-    webUrl: 'http://localhost:4200/index.html'
-  },
   {
     id: 'video-editor',
     name: 'Video Editor Pro',
@@ -73,19 +60,36 @@ const DEFAULT_APPS_FALLBACK = [
     icon: '🎬',
     accentColor: '#38bdf8',
     description: 'Multi-track video editing, AI Bangla voice typing, automated subtitle generator, transitions, and 3D visual templates.',
-    webUrl: 'http://localhost:4000'
+    webUrl: 'https://shakibapon1234-maker.github.io/Video-Editor/',
+    localUrl: 'http://localhost:4000'
+  },
+  {
+    id: 'photo-studio',
+    name: 'Photo & 3D Text Studio',
+    banglaName: 'ফটো ও ৩D টেক্সট স্টুডিও',
+    hasDesktop: true,
+    hasBrowser: true,
+    badge: 'Desktop & Web',
+    category: 'creative',
+    icon: '📷',
+    accentColor: '#f59e0b',
+    description: 'Advanced photo editing, AI background removal, filter presets, and full 3D extruded vector text studio.',
+    webUrl: 'https://shakibapon1234-maker.github.io/photo-and-text-editor/',
+    localUrl: 'http://localhost:4200/index.html'
   },
   {
     id: 'pdf-desktop',
     name: 'Antigravity PDF Pro',
-    banglaName: 'অ্যান্টিগ্র্যাভিটি পিডিএফ প্রো (ডেস্কটপ)',
+    banglaName: 'অ্যান্টিগ্র্যাভিটি পিডিএফ প্রো',
     hasDesktop: true,
-    hasBrowser: false,
-    badge: 'Desktop Pro',
+    hasBrowser: true,
+    badge: 'Web & Desktop',
     category: 'document',
     icon: '📑',
     accentColor: '#ef4444',
-    description: 'Professional desktop PDF studio: advanced page editing, offline conversion, watermark, e-sign, and OCR integration.'
+    description: 'Professional desktop PDF studio: advanced page editing, offline conversion, watermark, e-sign, and OCR integration.',
+    webUrl: 'https://shakibapon1234-maker.github.io/Antigravity-PDF-Pro-1/',
+    localUrl: 'http://localhost:5173'
   },
   {
     id: 'pdf-suite',
@@ -98,7 +102,8 @@ const DEFAULT_APPS_FALLBACK = [
     icon: '📄',
     accentColor: '#fb7185',
     description: 'Cloud-ready PDF tools suite: fast merge, split, annotate, signature, watermark, and PDF-to-image converter.',
-    webUrl: 'http://localhost:3456/index.html'
+    webUrl: 'https://shakibapon1234-maker.github.io/PDF-WEBSITE/',
+    localUrl: 'http://localhost:3456/index.html'
   },
   {
     id: 'warisha-fashion',
@@ -111,7 +116,8 @@ const DEFAULT_APPS_FALLBACK = [
     icon: '👗',
     accentColor: '#ec4899',
     description: 'Complete ERP suite: sales, purchase catalog, cash ledger, automated invoice generator, inventory audit, and analytics.',
-    webUrl: 'http://localhost:3500/index.html'
+    webUrl: 'https://shakibapon1234-maker.github.io/Warisha-Fashion/',
+    localUrl: 'http://localhost:3500/index.html'
   },
   {
     id: 'wings-fly-academy',
@@ -124,7 +130,8 @@ const DEFAULT_APPS_FALLBACK = [
     icon: '✈️',
     accentColor: '#0ea5e9',
     description: 'Aviation training academy platform: student portal, exam system, routine management, certificate verification, and CRM.',
-    webUrl: 'http://localhost:3600/index.html'
+    webUrl: 'https://shakibapon1234-maker.github.io/Wings-Fly-Academy-1/',
+    localUrl: 'http://localhost:3600/index.html'
   },
   {
     id: 'wings-fly-public',
@@ -137,7 +144,8 @@ const DEFAULT_APPS_FALLBACK = [
     icon: '🌐',
     accentColor: '#06b6d4',
     description: 'Official public-facing portal for Wings Fly: course listings, admissions, student dashboard, and news updates.',
-    webUrl: 'http://localhost:3700/index.html'
+    webUrl: 'https://shakibapon1234-maker.github.io/Wings-Fly-Public-Site/',
+    localUrl: 'http://localhost:3700/index.html'
   },
   {
     id: 'acade-flow',
@@ -150,7 +158,22 @@ const DEFAULT_APPS_FALLBACK = [
     icon: '🎓',
     accentColor: '#10b981',
     description: 'Next-generation education and student learning dashboard, curriculum management, and online academy portal.',
-    webUrl: 'http://localhost:3780/index.html'
+    webUrl: 'https://shakibapon1234-maker.github.io/acade-flow/',
+    localUrl: 'http://localhost:3780/index.html'
+  },
+  {
+    id: 'wings-fly-helper',
+    name: 'Wings Fly 1 Helper',
+    banglaName: 'উইংস ফ্লাই ১ হেল্পার ও টুলবক্স',
+    hasDesktop: false,
+    hasBrowser: true,
+    badge: 'Tools & Files',
+    category: 'creative',
+    icon: '🛠️',
+    accentColor: '#6366f1',
+    description: 'Essential developer tools, credential manager, credentials vault, voice tools, and reusable project assets.',
+    webUrl: 'https://github.com/shakibapon1234-maker/Wings-Fly-1-helper',
+    localUrl: 'http://localhost:3990/website/index.html'
   },
   {
     id: 'wings-fly-foundation',
@@ -160,39 +183,57 @@ const DEFAULT_APPS_FALLBACK = [
     hasBrowser: true,
     badge: 'Ledger & Accounts',
     category: 'finance',
-    icon: '🕊️',
+    icon: '🤝',
     accentColor: '#8b5cf6',
     description: 'Client ledger management, charitable accounts, donor records, and transparent financial reporting system.',
-    webUrl: 'http://localhost:3890/index.html'
+    webUrl: 'https://shakibapon1234-maker.github.io/Wings-Fly-Foundation/',
+    localUrl: 'http://localhost:3890/index.html'
+  },
+  {
+    id: 'voice-typing',
+    name: 'AI Voice Typing',
+    banglaName: 'এআই ভয়েস টাইপিং',
+    hasDesktop: false,
+    hasBrowser: true,
+    badge: 'AI Studio',
+    category: 'creative',
+    icon: '🎙️',
+    accentColor: '#f97316',
+    description: 'High-speed automated speech-to-text and AI Bangla speech transcription engine.',
+    webUrl: 'https://shakibapon1234-maker.github.io/Voice-Typing/',
+    localUrl: 'http://localhost:3950/index.html'
   }
 ];
 
-// ==================== APPS ====================
+// ==================== APPS LOADER ====================
 async function loadApps() {
   try {
     const res = await fetch('/api/apps');
     if (!res.ok) throw new Error('API unavailable');
-    allApps = await res.json();
+    const apiApps = await res.json();
+    allApps = DEFAULT_APPS_FALLBACK.map(def => {
+      const live = apiApps.find(a => a.id === def.id);
+      return live ? { ...def, ...live, webUrl: live.webUrl || def.webUrl } : def;
+    });
   } catch (err) {
-    // Cloud / GitHub Pages mode fallback
-    console.log('[Shakib Hub] Running in Cloud / GitHub Pages Mode');
     allApps = DEFAULT_APPS_FALLBACK;
   }
   if (activeSection === 'apps') renderApps();
 }
 
 function renderApps() {
+  if (!appsGrid) return;
   const filtered = allApps.filter(app => {
     const matchCat = activeFilter === 'all' || app.category === activeFilter;
-    const q = appSearchQuery;
+    const q = appSearchQuery.toLowerCase().trim();
     const matchSearch = !q || app.name.toLowerCase().includes(q) ||
       (app.banglaName || '').toLowerCase().includes(q) ||
-      app.description.toLowerCase().includes(q);
+      (app.description || '').toLowerCase().includes(q);
     return matchCat && matchSearch;
   });
 
   if (!filtered.length) {
-    appsGrid.innerHTML = `<div class="loading-state"><i class="fa-solid fa-box-open"></i><span>কোনো অ্যাপ পাওয়া যায়নি।</span></div>`;
+    appsGrid.innerHTML = `<div class="loading-state" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #94a3b8;"><i class="fa-solid fa-folder-open" style="font-size: 2.5rem; margin-bottom: 12px;"></i><br><span>কোনো অ্যাপ পাওয়া যায়নি</span></div>`;
     return;
   }
 
@@ -203,10 +244,10 @@ function renderApps() {
     let actionBtns = '';
     if (app.hasDesktop && app.hasBrowser) {
       actionBtns = `
-        <button class="btn-launch btn-launch-desktop" title="ডেস্কটপ অ্যাপ খুলুন" onclick="launchAppAction('${app.id}','desktop',this)">
+        <button class="btn-launch btn-launch-desktop" title="ডেস্কটপ অ্যাপ ওপেন করুন" onclick="launchAppAction('${app.id}','desktop',this)">
           <i class="fa-solid fa-desktop"></i><span>ডেস্কটপ</span>
         </button>
-        <button class="btn-launch btn-launch-browser" title="ব্রাউজারে খুলুন" onclick="launchAppAction('${app.id}','browser',this)">
+        <button class="btn-launch btn-launch-browser" title="ব্রাউজারে ওপেন করুন" onclick="launchAppAction('${app.id}','browser',this)">
           <i class="fa-solid fa-globe"></i><span>ব্রাউজার</span>
         </button>`;
     } else if (app.hasDesktop) {
@@ -222,11 +263,11 @@ function renderApps() {
     }
 
     return `
-      <div class="app-card">
+      <div class="app-card" style="--accent-color: ${app.accentColor || '#38bdf8'}">
         <div>
           <div class="app-card-header">
             <div class="app-identity">
-              <div class="app-icon-wrap" style="color:${app.accentColor};">${app.icon}</div>
+              <div class="app-icon-wrap" style="color:${app.accentColor}; font-size: 1.6rem;">${app.icon}</div>
               <div class="app-titles">
                 <h3>${app.name}</h3>
                 <div class="bangla-subtitle">${app.banglaName || ''}</div>
@@ -234,7 +275,7 @@ function renderApps() {
             </div>
             <span class="badge-tag" style="border-color:${app.accentColor}44; color:${app.accentColor};">${app.badge}</span>
           </div>
-          <p class="app-desc" style="margin-top:14px;">${app.description}</p>
+          <p class="app-desc" style="margin-top:14px;">${app.description || ''}</p>
         </div>
         <div class="app-meta-row">
           <div class="status-badge">
@@ -242,7 +283,7 @@ function renderApps() {
             <span>${statusText}</span>
           </div>
           <div class="app-card-actions">
-            <button class="btn-open-folder" title="ফোল্ডার খুলুন" onclick="openAppFolder('${app.id}')">
+            <button class="btn-open-folder" title="লোকাল ফোল্ডার খুলুন" onclick="openAppFolder('${app.id}')">
               <i class="fa-solid fa-folder-open"></i>
             </button>
             ${actionBtns}
@@ -254,9 +295,11 @@ function renderApps() {
 
 window.launchAppAction = async function(appId, mode, btn) {
   const app = allApps.find(a => a.id === appId);
+  if (!app) return;
   const orig = btn.innerHTML;
   btn.disabled = true;
   btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i>`;
+
   try {
     const res = await fetch(`/api/launch/${appId}`, {
       method: 'POST',
@@ -264,24 +307,20 @@ window.launchAppAction = async function(appId, mode, btn) {
       body: JSON.stringify({ mode })
     });
     const data = await res.json();
-    if (!res.ok || data.error) throw new Error(data.error || 'Launch failed');
-    showToast(data.message || 'চালু হয়েছে!', 'success');
-    
-    // If browser mode, open in browser tab immediately
-    if (mode === 'browser' && data.webUrl) {
-      window.open(data.webUrl, '_blank');
+    if (!res.ok || data.error) throw new Error(data.error || 'Local API failed');
+
+    showToast(data.message || 'চালু হচ্ছে...', 'success');
+    if (mode === 'browser') {
+      window.open(data.webUrl || app.webUrl, '_blank');
     }
-    
     setTimeout(loadApps, 1500);
   } catch (err) {
-    // Cloud / GitHub Pages Mode Handling
-    if (mode === 'browser' && app && app.webUrl) {
+    if (mode === 'browser' || !app.hasDesktop) {
       window.open(app.webUrl, '_blank');
-      showToast(`${app.name} ওপেন করা হচ্ছে...`, 'info');
+      showToast(`${app.name} ক্লাউড স্টুডিও ওপেন হচ্ছে...`, 'success');
     } else if (mode === 'desktop') {
-      showToast('এটি ডেস্কটপ অ্যাপ। এটি আপনার পিসির শর্টকাট দিয়ে চালান।', 'info');
-    } else {
-      showToast(`ত্রুটি: ${err.message}`, 'error');
+      window.open(app.webUrl, '_blank');
+      showToast(`লোকাল সার্ভার অফ থাকায় ${app.name}-এর ক্লাউড ভার্সন চালু করা হলো`, 'info');
     }
   } finally {
     btn.disabled = false;
@@ -294,9 +333,14 @@ window.openAppFolder = async function(appId) {
   try {
     const res = await fetch(`/api/open-folder/${appId}`, { method: 'POST' });
     const data = await res.json();
-    showToast(data.message || 'ফোল্ডার ওপেন হয়েছে।', 'info');
+    showToast(data.message || 'ফোল্ডার ওপেন হয়েছে', 'info');
   } catch (err) {
-    showToast('অনলাইন ক্লাউড মোডে সরাসরি লোকাল ফোল্ডার খোলা সম্ভব নয়।', 'info');
+    if (app && app.webUrl) {
+      window.open(app.webUrl, '_blank');
+      showToast(`${app.name} প্রজেক্ট ওপেন করা হচ্ছে...`, 'info');
+    } else {
+      showToast('লোকাল সার্ভার চালু থাকলে সরাসরি ফোল্ডার খোলা যাবে', 'info');
+    }
   }
 };
 
@@ -304,15 +348,15 @@ window.openAppFolder = async function(appId) {
 const CATEGORY_ICONS = {
   website: '🌐',
   wordpress: '📝',
-  admin: '🔧',
-  social: '📱',
+  admin: '⚡',
+  social: '💬',
   tool: '🛠️',
   finance: '💰',
-  other: '📌'
+  other: '📁'
 };
 
 const CATEGORY_LABELS = {
-  website: 'ওয়েবসাইট',
+  website: 'ওয়েবসাইট',
   wordpress: 'WordPress',
   admin: 'Admin Panel',
   social: 'Social Media',
@@ -333,6 +377,7 @@ function saveBookmarksToStorage() {
 }
 
 function updateBookmarkCountBadge() {
+  if (!bookmarkCountEl) return;
   if (bookmarks.length > 0) {
     bookmarkCountEl.textContent = bookmarks.length;
     bookmarkCountEl.style.display = 'inline';
@@ -349,6 +394,7 @@ function getFaviconUrl(url) {
 }
 
 function renderBookmarks() {
+  if (!bookmarksGrid) return;
   const q = bmSearchQuery.toLowerCase().trim();
   const filtered = bookmarks.filter(bm => {
     if (!q) return true;
@@ -360,15 +406,15 @@ function renderBookmarks() {
 
   if (!filtered.length) {
     bookmarksGrid.innerHTML = `
-      <div class="empty-bookmarks">
-        <i class="fa-solid fa-bookmark"></i>
-        <span>${bookmarks.length ? 'কোনো বুকমার্ক খুঁজে পাওয়া যায়নি।' : 'কোনো বুকমার্ক নেই। উপরের বাটন দিয়ে যোগ করুন।'}</span>
+      <div class="empty-bookmarks" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #94a3b8;">
+        <i class="fa-solid fa-bookmark" style="font-size: 2.5rem; margin-bottom: 12px;"></i><br>
+        <span>${bookmarks.length ? 'খোঁজা বুকমার্কটি পাওয়া যায়নি' : 'এখনো কোনো বুকমার্ক যুক্ত করা হয়নি'}</span>
       </div>`;
     return;
   }
 
   bookmarksGrid.innerHTML = filtered.map(bm => {
-    const icon = CATEGORY_ICONS[bm.category] || '🔗';
+    const icon = CATEGORY_ICONS[bm.category] || '📁';
     const faviconUrl = getFaviconUrl(bm.url);
     const faviconHtml = faviconUrl
       ? `<img src="${faviconUrl}" onerror="this.parentElement.innerHTML='${icon}'" />`
@@ -384,10 +430,10 @@ function renderBookmarks() {
           ${bm.note ? `<div class="bookmark-category-dot">📝 ${escapeHtml(bm.note)}</div>` : ''}
         </div>
         <div class="bookmark-actions" onclick="event.stopPropagation();">
-          <button class="bookmark-action-btn" title="সম্পাদনা" onclick="editBookmark('${bm.id}')">
+          <button class="bookmark-action-btn" title="এডিট করুন" onclick="editBookmark('${bm.id}')">
             <i class="fa-solid fa-pen"></i>
           </button>
-          <button class="bookmark-action-btn delete" title="মুছুন" onclick="deleteBookmark('${bm.id}')">
+          <button class="bookmark-action-btn delete" title="মুছে ফেলুন" onclick="deleteBookmark('${bm.id}')">
             <i class="fa-solid fa-trash"></i>
           </button>
         </div>
@@ -410,7 +456,7 @@ window.editBookmark = function(id) {
   const bm = bookmarks.find(b => b.id === id);
   if (!bm) return;
   editingBookmarkId = id;
-  document.getElementById('modalTitle').textContent = '✏️ বুকমার্ক সম্পাদনা করুন';
+  document.getElementById('modalTitle').textContent = 'বুকমার্ক পরিবর্তন করুন';
   document.getElementById('bmTitle').value = bm.title;
   document.getElementById('bmUrl').value = bm.url;
   document.getElementById('bmCategory').value = bm.category || 'website';
@@ -419,76 +465,91 @@ window.editBookmark = function(id) {
 };
 
 window.deleteBookmark = function(id) {
-  if (!confirm('এই বুকমার্কটি মুছে দিতে চান?')) return;
+  if (!confirm('এই বুকমার্কটি মুছে ফেলতে চান?')) return;
   bookmarks = bookmarks.filter(b => b.id !== id);
   saveBookmarksToStorage();
   renderBookmarks();
-  showToast('বুকমার্ক মুছে ফেলা হয়েছে।', 'info');
+  showToast('বুকমার্ক মুছে ফেলা হয়েছে', 'info');
 };
 
 function openModal() {
-  bookmarkModal.classList.add('open');
-  document.getElementById('bmTitle').focus();
+  if (bookmarkModal) {
+    bookmarkModal.classList.add('open');
+    document.getElementById('bmTitle').focus();
+  }
 }
 
 function closeModal() {
-  bookmarkModal.classList.remove('open');
-  editingBookmarkId = null;
-  document.getElementById('bmTitle').value = '';
-  document.getElementById('bmUrl').value = '';
-  document.getElementById('bmCategory').value = 'website';
-  document.getElementById('bmNote').value = '';
-  document.getElementById('modalTitle').textContent = '🔖 বুকমার্ক যুক্ত করুন';
+  if (bookmarkModal) {
+    bookmarkModal.classList.remove('open');
+    editingBookmarkId = null;
+    document.getElementById('bmTitle').value = '';
+    document.getElementById('bmUrl').value = '';
+    document.getElementById('bmCategory').value = 'website';
+    document.getElementById('bmNote').value = '';
+    document.getElementById('modalTitle').textContent = 'নতুন বুকমার্ক যুক্ত করুন';
+  }
 }
 
-document.getElementById('openAddBookmarkBtn').addEventListener('click', () => {
-  editingBookmarkId = null;
-  closeModal();
-  openModal();
-});
+const openAddBookmarkBtn = document.getElementById('openAddBookmarkBtn');
+if (openAddBookmarkBtn) {
+  openAddBookmarkBtn.addEventListener('click', () => {
+    editingBookmarkId = null;
+    closeModal();
+    openModal();
+  });
+}
 
-document.getElementById('closeModal').addEventListener('click', closeModal);
-document.getElementById('cancelModal').addEventListener('click', closeModal);
-bookmarkModal.addEventListener('click', (e) => { if (e.target === bookmarkModal) closeModal(); });
+const closeModalBtn = document.getElementById('closeModal');
+if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
 
-document.getElementById('saveBookmark').addEventListener('click', () => {
-  const title = document.getElementById('bmTitle').value.trim();
-  const url = document.getElementById('bmUrl').value.trim();
-  const category = document.getElementById('bmCategory').value;
-  const note = document.getElementById('bmNote').value.trim();
+const cancelModalBtn = document.getElementById('cancelModal');
+if (cancelModalBtn) cancelModalBtn.addEventListener('click', closeModal);
 
-  if (!title) { showToast('শিরোনাম লিখুন।', 'error'); return; }
-  if (!url) { showToast('URL দিন।', 'error'); return; }
+if (bookmarkModal) {
+  bookmarkModal.addEventListener('click', (e) => { if (e.target === bookmarkModal) closeModal(); });
+}
 
-  let finalUrl = url;
-  if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
-    finalUrl = 'https://' + finalUrl;
-  }
+const saveBookmarkBtn = document.getElementById('saveBookmark');
+if (saveBookmarkBtn) {
+  saveBookmarkBtn.addEventListener('click', () => {
+    const title = document.getElementById('bmTitle').value.trim();
+    const url = document.getElementById('bmUrl').value.trim();
+    const category = document.getElementById('bmCategory').value;
+    const note = document.getElementById('bmNote').value.trim();
 
-  if (editingBookmarkId) {
-    const idx = bookmarks.findIndex(b => b.id === editingBookmarkId);
-    if (idx >= 0) {
-      bookmarks[idx] = { ...bookmarks[idx], title, url: finalUrl, category, note };
+    if (!title) { showToast('একটি নাম লিখুন', 'error'); return; }
+    if (!url) { showToast('URL প্রবেশ করুন', 'error'); return; }
+
+    let finalUrl = url;
+    if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+      finalUrl = 'https://' + finalUrl;
     }
-    showToast('বুকমার্ক আপডেট হয়েছে!', 'success');
-  } else {
-    bookmarks.push({
-      id: Date.now().toString(),
-      title,
-      url: finalUrl,
-      category,
-      note,
-      createdAt: new Date().toISOString()
-    });
-    showToast('বুকমার্ক সংরক্ষণ হয়েছে!', 'success');
-  }
 
-  saveBookmarksToStorage();
-  renderBookmarks();
-  closeModal();
-});
+    if (editingBookmarkId) {
+      const idx = bookmarks.findIndex(b => b.id === editingBookmarkId);
+      if (idx >= 0) {
+        bookmarks[idx] = { ...bookmarks[idx], title, url: finalUrl, category, note };
+      }
+      showToast('বুকমার্ক আপডেট হয়েছে!', 'success');
+    } else {
+      bookmarks.push({
+        id: Date.now().toString(),
+        title,
+        url: finalUrl,
+        category,
+        note,
+        createdAt: new Date().toISOString()
+      });
+      showToast('বুকমার্ক যুক্ত হয়েছে!', 'success');
+    }
 
-// Bookmark search
+    saveBookmarksToStorage();
+    renderBookmarks();
+    closeModal();
+  });
+}
+
 if (bmSearchInput) {
   bmSearchInput.addEventListener('input', (e) => {
     bmSearchQuery = e.target.value;
@@ -496,46 +557,49 @@ if (bmSearchInput) {
   });
 }
 
-// ==================== NAV TABS ====================
 navTabs.forEach(tab => {
   tab.addEventListener('click', () => {
     const section = tab.dataset.section;
-
     navTabs.forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
 
     if (section === 'bookmarks') {
       showSection('bookmarks');
-      appSearchInput.placeholder = 'বুকমার্ক খুঁজুন...';
+      if (appSearchInput) appSearchInput.placeholder = 'বুকমার্ক খুঁজুন...';
     } else {
       showSection('apps');
       activeFilter = tab.dataset.filter || 'all';
-      appSearchInput.placeholder = 'অ্যাপ বা প্রজেক্ট খুঁজুন...';
+      if (appSearchInput) appSearchInput.placeholder = 'অ্যাপ বা বুকমার্ক খুঁজুন...';
       renderApps();
     }
   });
 });
 
-// App search (also triggers bookmark search if on that section)
-appSearchInput.addEventListener('input', (e) => {
-  const q = e.target.value.toLowerCase().trim();
-  if (activeSection === 'bookmarks') {
-    bmSearchQuery = q;
-    renderBookmarks();
-  } else {
-    appSearchQuery = q;
-    renderApps();
-  }
-});
+if (appSearchInput) {
+  appSearchInput.addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase().trim();
+    if (activeSection === 'bookmarks') {
+      bmSearchQuery = q;
+      renderBookmarks();
+    } else {
+      appSearchQuery = q;
+      renderApps();
+    }
+  });
+}
 
-// Refresh button
-refreshBtn.addEventListener('click', () => {
-  const icon = refreshBtn.querySelector('i');
-  icon.classList.add('fa-spin');
-  loadApps().finally(() => setTimeout(() => icon.classList.remove('fa-spin'), 600));
-});
+if (refreshBtn) {
+  refreshBtn.addEventListener('click', () => {
+    const icon = refreshBtn.querySelector('i');
+    if (icon) icon.classList.add('fa-spin');
+    loadApps().finally(() => {
+      if (icon) setTimeout(() => icon.classList.remove('fa-spin'), 600);
+      showToast('সব তথ্য রিফ্রেশ করা হয়েছে!', 'success');
+    });
+  });
+}
 
-// ==================== INIT ====================
+// ==================== INITIALIZE ====================
 updateBookmarkCountBadge();
 loadApps();
 setInterval(loadApps, 10000);
