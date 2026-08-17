@@ -31,6 +31,9 @@ const navTabs = document.querySelectorAll('.nav-tab');
 const toastContainer = document.getElementById('toastContainer');
 const bookmarkModal = document.getElementById('bookmarkModal');
 const bookmarkCountEl = document.getElementById('bookmarkCount');
+const runningStatusPill = document.getElementById('runningStatusPill');
+const runningStatusText = document.getElementById('runningStatusText');
+const runningNavCount = document.getElementById('runningNavCount');
 
 // ==================== TOAST NOTIFICATION ====================
 function showToast(message, type = 'info') {
@@ -103,7 +106,7 @@ const DEFAULT_APPS_FALLBACK = [
     accentColor: '#ef4444',
     description: 'Professional desktop PDF studio: advanced page editing, offline conversion, watermark, e-sign, and OCR integration.',
     webUrl: 'https://shakibapon1234-maker.github.io/Antigravity-PDF-Pro-1/',
-    localUrl: 'http://localhost:5173'
+    localUrl: 'http://localhost:3000'
   },
   {
     id: 'pdf-suite',
@@ -219,6 +222,32 @@ const DEFAULT_APPS_FALLBACK = [
   }
 ];
 
+function updateRunningAppsCount() {
+  const runningApps = allApps.filter(a => !!a.isRunning);
+  const count = runningApps.length;
+
+  if (runningStatusText) {
+    runningStatusText.textContent = `${count} টি অ্যাপ রানিং`;
+  }
+  if (runningNavCount) {
+    if (count > 0) {
+      runningNavCount.textContent = count;
+      runningNavCount.style.display = 'inline';
+    } else {
+      runningNavCount.style.display = 'none';
+    }
+  }
+}
+
+window.filterRunningApps = function() {
+  showSection('apps');
+  activeFilter = 'running';
+  navTabs.forEach(t => {
+    t.classList.toggle('active', t.dataset.filter === 'running');
+  });
+  renderApps();
+};
+
 // ==================== APPS LOADER ====================
 async function loadApps() {
   if (isLocalServer) {
@@ -240,13 +269,22 @@ async function loadApps() {
     // Cloud / GitHub Pages Mode
     allApps = DEFAULT_APPS_FALLBACK;
   }
+  updateRunningAppsCount();
   if (activeSection === 'apps') renderApps();
 }
 
 function renderApps() {
   if (!appsGrid) return;
   const filtered = allApps.filter(app => {
-    const matchCat = activeFilter === 'all' || app.category === activeFilter;
+    let matchCat = false;
+    if (activeFilter === 'all') {
+      matchCat = true;
+    } else if (activeFilter === 'running') {
+      matchCat = !!app.isRunning;
+    } else {
+      matchCat = app.category === activeFilter;
+    }
+
     const q = appSearchQuery.toLowerCase().trim();
     const matchSearch = !q || app.name.toLowerCase().includes(q) ||
       (app.banglaName || '').toLowerCase().includes(q) ||
@@ -255,7 +293,10 @@ function renderApps() {
   });
 
   if (!filtered.length) {
-    appsGrid.innerHTML = `<div class="loading-state" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #94a3b8;"><i class="fa-solid fa-folder-open" style="font-size: 2.5rem; margin-bottom: 12px;"></i><br><span>কোনো অ্যাপ পাওয়া যায়নি</span></div>`;
+    const emptyMsg = activeFilter === 'running' 
+      ? 'বর্তমানে কোনো অ্যাপ রানিং নেই'
+      : 'কোনো অ্যাপ পাওয়া যায়নি';
+    appsGrid.innerHTML = `<div class="loading-state" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #94a3b8;"><i class="fa-solid fa-folder-open" style="font-size: 2.5rem; margin-bottom: 12px;"></i><br><span>${emptyMsg}</span></div>`;
     return;
   }
 
@@ -649,5 +690,5 @@ if (refreshBtn) {
 updateBookmarkCountBadge();
 loadApps();
 if (isLocalServer) {
-  setInterval(loadApps, 10000);
+  setInterval(loadApps, 4000);
 }

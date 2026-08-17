@@ -51,6 +51,10 @@
         </div>
       </div>
       <div class="header-actions">
+        <div class="running-status-pill" id="runningStatusPill" title="বর্তমান রানিং অ্যাপসের সংখ্যা" onclick="filterRunningApps()">
+          <span class="running-status-dot"></span>
+          <span id="runningStatusText">০ টি অ্যাপ রানিং</span>
+        </div>
         <div class="search-box">
           <i class="fa-solid fa-magnifying-glass"></i>
           <input type="text" id="appSearchInput" placeholder="অ্যাপ বা বুকমার্ক খুঁজুন..." />
@@ -65,6 +69,10 @@
     <nav class="hub-nav" id="mainNav">
       <button class="nav-tab active" data-filter="all" data-section="apps">
         <i class="fa-solid fa-border-all"></i> সকল অ্যাপ
+      </button>
+      <button class="nav-tab nav-tab-running" data-filter="running" data-section="apps">
+        <i class="fa-solid fa-circle-play" style="color: #22c55e;"></i> রানিং অ্যাপস
+        <span id="runningNavCount" class="bm-count" style="display:none; background: #22c55e; color: #052e16;">0</span>
       </button>
       <button class="nav-tab" data-filter="creative" data-section="apps">
         <i class="fa-solid fa-wand-magic-sparkles"></i> ক্রিয়েটিভ

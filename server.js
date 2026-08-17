@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const net = require('net');
 const { exec, spawn } = require('child_process');
 
 const PORT = 4500;
@@ -97,10 +98,10 @@ const APP_DEFINITIONS = [
     accentColor: '#ef4444',
     description: 'Professional desktop PDF studio: advanced page editing, offline conversion, watermark, e-sign, and OCR integration.',
     folderCandidates: ['Antigravity-PDF-Pro-1', 'antigravity-pdf-pro', 'PDF-Pro', 'AntigravityPDFPro'],
-    launchCmdCandidates: ['RUN_APP.bat', 'start.bat', 'start_desktop.bat'],
-    webPort: 5173,
+    launchCmdCandidates: ['FAST_DEV.bat', 'DEV_START.bat', 'start.bat', 'RUN_APP.bat', 'start_desktop.bat'],
+    webPort: 3000,
     webUrl: 'https://shakibapon1234-maker.github.io/Antigravity-PDF-Pro-1/',
-    localUrl: 'http://localhost:5173'
+    localUrl: 'http://localhost:3000'
   },
   {
     id: 'pdf-suite',
@@ -257,6 +258,45 @@ function getResolvedApps() {
   });
 }
 
+function checkPortInUse(port) {
+  return new Promise((resolve) => {
+    if (!port) return resolve(false);
+    const socket = new net.Socket();
+    socket.setTimeout(250);
+    socket.once('connect', () => {
+      socket.destroy();
+      resolve(true);
+    });
+    socket.once('timeout', () => {
+      socket.destroy();
+      resolve(false);
+    });
+    socket.once('error', () => {
+      socket.destroy();
+      resolve(false);
+    });
+    try {
+      socket.connect(port, '127.0.0.1');
+    } catch (_) {
+      resolve(false);
+    }
+  });
+}
+
+async function getResolvedAppsWithStatus() {
+  const apps = getResolvedApps();
+  const list = await Promise.all(
+    apps.map(async (app) => {
+      const portLive = app.webPort ? await checkPortInUse(app.webPort) : false;
+      return {
+        ...app,
+        isRunning: !!(runningProcesses[app.id] || portLive)
+      };
+    })
+  );
+  return list;
+}
+
 function launchApp(appId, mode, callback) {
   const apps = getResolvedApps();
   const app = apps.find(a => a.id === appId);
@@ -330,9 +370,13 @@ const server = http.createServer((req, res) => {
   }
 
   if (pathname === '/api/apps' && req.method === 'GET') {
-    const list = getResolvedApps();
-    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-    res.end(JSON.stringify(list));
+    getResolvedAppsWithStatus().then(list => {
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify(list));
+    }).catch(() => {
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify(getResolvedApps()));
+    });
     return;
   }
 

@@ -16,7 +16,12 @@ function startServer(callback) {
   setTimeout(callback, 800);
 }
 
+try {
+  app.setAppUserModelId('com.shakib.studiohub');
+} catch (_) {}
+
 function createWindow() {
+  const iconPath = path.join(__dirname, 'icon.png');
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 840,
@@ -25,7 +30,7 @@ function createWindow() {
     title: 'Shakib Studio Hub — Central Control',
     backgroundColor: '#0b0d13',
     autoHideMenuBar: true,
-    icon: path.join(__dirname, 'logo.svg'),
+    icon: fs.existsSync(iconPath) ? iconPath : path.join(__dirname, 'logo.svg'),
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true
