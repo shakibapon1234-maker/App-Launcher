@@ -10,6 +10,28 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .bm-count {
+      background: #f59e0b;
+      color: #0b0d13;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 20px;
+      margin-left: 4px;
+    }
+    a.btn-launch {
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    a.btn-launch:hover {
+      filter: brightness(1.15);
+      transform: translateY(-2px);
+    }
+  </style>
 </head>
 <body>
 
@@ -70,7 +92,7 @@
     <main class="apps-grid" id="appsGrid">
       <div class="loading-state">
         <i class="fa-solid fa-circle-notch fa-spin"></i>
-        <span>অ্যাপ্লিকেশন লোড হচ্ছে...</span>
+        <span>অ্যাপ তালিকা লোড হচ্ছে...</span>
       </div>
     </main>
 
@@ -82,13 +104,13 @@
           <input type="text" id="bookmarkSearch" placeholder="বুকমার্ক খুঁজুন..." />
         </div>
         <button class="btn-add-bookmark" id="openAddBookmarkBtn">
-          <i class="fa-solid fa-plus"></i> বুকমার্ক যুক্ত করুন
+          <i class="fa-solid fa-plus"></i> নতুন বুকমার্ক
         </button>
       </div>
       <div class="bookmarks-grid" id="bookmarksGrid">
         <div class="empty-bookmarks">
           <i class="fa-solid fa-bookmark"></i>
-          <span>কোনো বুকমার্ক নেই। উপরের বাটন দিয়ে যোগ করুন।</span>
+          <span>এখনো কোনো বুকমার্ক যুক্ত করা হয়নি</span>
         </div>
       </div>
     </div>
@@ -97,7 +119,7 @@
     <footer class="hub-footer">
       <div class="footer-left">
         <span class="status-indicator live"></span>
-        <span>Shakib Studio Hub · <strong>Port 4500</strong></span>
+        <span id="hubModeText">Shakib Studio Hub — Cloud Edition</span>
       </div>
       <div class="footer-right">
         <span>© Shakib Studio Hub</span>
@@ -109,7 +131,7 @@
   <div class="modal-overlay" id="bookmarkModal">
     <div class="modal-box">
       <div class="modal-title">
-        <span id="modalTitle">🔖 বুকমার্ক যুক্ত করুন</span>
+        <span id="modalTitle"><i class="fa-solid fa-bookmark"></i> নতুন বুকমার্ক যুক্ত করুন</span>
         <button class="modal-close" id="closeModal"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="modal-field">
@@ -121,20 +143,20 @@
         <input type="url" id="bmUrl" placeholder="https://example.com" />
       </div>
       <div class="modal-field">
-        <label>ক্যাটাগরি / ধরন</label>
+        <label>ক্যাটাগরি</label>
         <select id="bmCategory">
-          <option value="website">🌐 সাধারণ ওয়েবসাইট</option>
+          <option value="website">🌐 সাধারণ ওয়েবসাইট</option>
           <option value="wordpress">📝 WordPress সাইট</option>
-          <option value="admin">🔧 Admin Panel</option>
-          <option value="social">📱 সোশ্যাল মিডিয়া</option>
-          <option value="tool">🛠️ ডেভ টুল</option>
-          <option value="finance">💰 ফাইন্যান্স ও পেমেন্ট</option>
-          <option value="other">📌 অন্যান্য</option>
+          <option value="admin">⚡ Admin Panel</option>
+          <option value="social">💬 সোশ্যাল মিডিয়া</option>
+          <option value="tool">🛠️ ডেভেলপার টুল</option>
+          <option value="finance">💰 ফাইন্যান্স ও ব্যাংকিং</option>
+          <option value="other">📁 অন্যান্য</option>
         </select>
       </div>
       <div class="modal-field">
         <label>নোট (ঐচ্ছিক)</label>
-        <input type="text" id="bmNote" placeholder="যেমন: ব্যবসার মেইন সাইট" />
+        <input type="text" id="bmNote" placeholder="যেমন: ক্লায়েন্ট লাইভ লিঙ্ক" />
       </div>
       <div class="modal-actions">
         <button class="btn-modal-cancel" id="cancelModal">বাতিল</button>
@@ -145,18 +167,6 @@
 
   <!-- Toast Container -->
   <div id="toastContainer" class="toast-container"></div>
-
-  <style>
-    .bm-count {
-      background: #f59e0b;
-      color: #0b0d13;
-      font-size: 10px;
-      font-weight: 800;
-      padding: 1px 6px;
-      border-radius: 20px;
-      margin-left: 4px;
-    }
-  </style>
 
   <script src="app.js"></script>
 </body>

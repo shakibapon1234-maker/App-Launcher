@@ -1,3 +1,16 @@
+// ==================== ENVIRONMENT ====================
+const isLocalServer = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+// Update footer mode text
+document.addEventListener('DOMContentLoaded', () => {
+  const modeEl = document.getElementById('hubModeText');
+  if (modeEl) {
+    modeEl.textContent = isLocalServer 
+      ? 'Shakib Studio Hub — Local Server (Port 4500)' 
+      : 'Shakib Studio Hub — GitHub Cloud Live';
+  }
+});
+
 // ==================== STATE ====================
 let allApps = [];
 let activeFilter = 'all';
@@ -21,6 +34,7 @@ const bookmarkCountEl = document.getElementById('bookmarkCount');
 
 // ==================== TOAST NOTIFICATION ====================
 function showToast(message, type = 'info') {
+  if (!toastContainer) return;
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
   const icon = type === 'error' ? 'fa-circle-exclamation' : type === 'success' ? 'fa-circle-check' : 'fa-circle-info';
@@ -38,12 +52,12 @@ function showToast(message, type = 'info') {
 function showSection(section) {
   activeSection = section;
   if (section === 'bookmarks') {
-    appsGrid.style.display = 'none';
-    bookmarksPanel.classList.add('active');
+    if (appsGrid) appsGrid.style.display = 'none';
+    if (bookmarksPanel) bookmarksPanel.classList.add('active');
     renderBookmarks();
   } else {
-    appsGrid.style.display = '';
-    bookmarksPanel.classList.remove('active');
+    if (appsGrid) appsGrid.style.display = '';
+    if (bookmarksPanel) bookmarksPanel.classList.remove('active');
   }
 }
 
@@ -207,15 +221,23 @@ const DEFAULT_APPS_FALLBACK = [
 
 // ==================== APPS LOADER ====================
 async function loadApps() {
-  try {
-    const res = await fetch('/api/apps');
-    if (!res.ok) throw new Error('API unavailable');
-    const apiApps = await res.json();
-    allApps = DEFAULT_APPS_FALLBACK.map(def => {
-      const live = apiApps.find(a => a.id === def.id);
-      return live ? { ...def, ...live, webUrl: live.webUrl || def.webUrl } : def;
-    });
-  } catch (err) {
+  if (isLocalServer) {
+    try {
+      const res = await fetch('/api/apps');
+      if (res.ok) {
+        const apiApps = await res.json();
+        allApps = DEFAULT_APPS_FALLBACK.map(def => {
+          const live = apiApps.find(a => a.id === def.id);
+          return live ? { ...def, ...live } : def;
+        });
+      } else {
+        allApps = DEFAULT_APPS_FALLBACK;
+      }
+    } catch (_) {
+      allApps = DEFAULT_APPS_FALLBACK;
+    }
+  } else {
+    // Cloud / GitHub Pages Mode
     allApps = DEFAULT_APPS_FALLBACK;
   }
   if (activeSection === 'apps') renderApps();
@@ -242,25 +264,58 @@ function renderApps() {
     const statusText = app.isRunning ? 'Running' : 'Ready';
 
     let actionBtns = '';
-    if (app.hasDesktop && app.hasBrowser) {
-      actionBtns = `
-        <button class="btn-launch btn-launch-desktop" title="ডেস্কটপ অ্যাপ ওপেন করুন" onclick="launchAppAction('${app.id}','desktop',this)">
-          <i class="fa-solid fa-desktop"></i><span>ডেস্কটপ</span>
-        </button>
-        <button class="btn-launch btn-launch-browser" title="ব্রাউজারে ওপেন করুন" onclick="launchAppAction('${app.id}','browser',this)">
-          <i class="fa-solid fa-globe"></i><span>ব্রাউজার</span>
-        </button>`;
-    } else if (app.hasDesktop) {
-      actionBtns = `
-        <button class="btn-launch btn-full-width" style="background: linear-gradient(135deg, #ef4444, #dc2626);" onclick="launchAppAction('${app.id}','desktop',this)">
-          <i class="fa-solid fa-desktop"></i><span>ডেস্কটপ অ্যাপ</span>
-        </button>`;
+
+    if (isLocalServer) {
+      // Local Server mode: interactive buttons with local API hooks
+      if (app.hasDesktop && app.hasBrowser) {
+        actionBtns = `
+          <button class="btn-launch btn-launch-desktop" title="ডেস্কটপ অ্যাপ ওপেন করুন" onclick="launchAppAction('${app.id}','desktop',this)">
+            <i class="fa-solid fa-desktop"></i><span>ডেস্কটপ</span>
+          </button>
+          <button class="btn-launch btn-launch-browser" title="ব্রাউজারে ওপেন করুন" onclick="launchAppAction('${app.id}','browser',this)">
+            <i class="fa-solid fa-globe"></i><span>ব্রাউজার</span>
+          </button>`;
+      } else if (app.hasDesktop) {
+        actionBtns = `
+          <button class="btn-launch btn-full-width" style="background: linear-gradient(135deg, #ef4444, #dc2626);" onclick="launchAppAction('${app.id}','desktop',this)">
+            <i class="fa-solid fa-desktop"></i><span>ডেস্কটপ অ্যাপ</span>
+          </button>`;
+      } else {
+        actionBtns = `
+          <button class="btn-launch btn-full-width" onclick="launchAppAction('${app.id}','browser',this)">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i><span>ওপেন স্টুডিও</span>
+          </button>`;
+      }
     } else {
-      actionBtns = `
-        <button class="btn-launch btn-full-width" onclick="launchAppAction('${app.id}','browser',this)">
-          <i class="fa-solid fa-arrow-up-right-from-square"></i><span>ওপেন স্টুডিও</span>
-        </button>`;
+      // Cloud / GitHub Pages mode: 100% Reliable Direct Anchor Links (Zero Popup Blockers!)
+      if (app.hasDesktop && app.hasBrowser) {
+        actionBtns = `
+          <a href="${app.webUrl}" target="_blank" rel="noopener noreferrer" class="btn-launch btn-launch-desktop" title="অ্যাপ ওপেন করুন">
+            <i class="fa-solid fa-desktop"></i><span>ডেস্কটপ</span>
+          </a>
+          <a href="${app.webUrl}" target="_blank" rel="noopener noreferrer" class="btn-launch btn-launch-browser" title="ব্রাউজারে ওপেন করুন">
+            <i class="fa-solid fa-globe"></i><span>ব্রাউজার</span>
+          </a>`;
+      } else if (app.hasDesktop) {
+        actionBtns = `
+          <a href="${app.webUrl}" target="_blank" rel="noopener noreferrer" class="btn-launch btn-full-width" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+            <i class="fa-solid fa-desktop"></i><span>ওপেন স্টুডিও</span>
+          </a>`;
+      } else {
+        actionBtns = `
+          <a href="${app.webUrl}" target="_blank" rel="noopener noreferrer" class="btn-launch btn-full-width">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i><span>ওপেন স্টুডিও</span>
+          </a>`;
+      }
     }
+
+    const folderBtn = isLocalServer ? `
+      <button class="btn-open-folder" title="লোকাল ফোল্ডার খুলুন" onclick="openAppFolder('${app.id}')">
+        <i class="fa-solid fa-folder-open"></i>
+      </button>` : `
+      <a href="${app.webUrl}" target="_blank" rel="noopener noreferrer" class="btn-open-folder" title="প্রজেক্ট লিঙ্ক ওপেন করুন" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+      </a>`;
 
     return `
       <div class="app-card" style="--accent-color: ${app.accentColor || '#38bdf8'}">
@@ -283,9 +338,7 @@ function renderApps() {
             <span>${statusText}</span>
           </div>
           <div class="app-card-actions">
-            <button class="btn-open-folder" title="লোকাল ফোল্ডার খুলুন" onclick="openAppFolder('${app.id}')">
-              <i class="fa-solid fa-folder-open"></i>
-            </button>
+            ${folderBtn}
             ${actionBtns}
           </div>
         </div>
@@ -293,6 +346,7 @@ function renderApps() {
   }).join('');
 }
 
+// Local server action handler
 window.launchAppAction = async function(appId, mode, btn) {
   const app = allApps.find(a => a.id === appId);
   if (!app) return;
@@ -306,22 +360,16 @@ window.launchAppAction = async function(appId, mode, btn) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mode })
     });
+    if (!res.ok) throw new Error('API request failed');
     const data = await res.json();
-    if (!res.ok || data.error) throw new Error(data.error || 'Local API failed');
-
     showToast(data.message || 'চালু হচ্ছে...', 'success');
     if (mode === 'browser') {
       window.open(data.webUrl || app.webUrl, '_blank');
     }
     setTimeout(loadApps, 1500);
   } catch (err) {
-    if (mode === 'browser' || !app.hasDesktop) {
-      window.open(app.webUrl, '_blank');
-      showToast(`${app.name} ক্লাউড স্টুডিও ওপেন হচ্ছে...`, 'success');
-    } else if (mode === 'desktop') {
-      window.open(app.webUrl, '_blank');
-      showToast(`লোকাল সার্ভার অফ থাকায় ${app.name}-এর ক্লাউড ভার্সন চালু করা হলো`, 'info');
-    }
+    window.open(app.webUrl, '_blank');
+    showToast(`${app.name} ওপেন হচ্ছে...`, 'info');
   } finally {
     btn.disabled = false;
     btn.innerHTML = orig;
@@ -332,14 +380,13 @@ window.openAppFolder = async function(appId) {
   const app = allApps.find(a => a.id === appId);
   try {
     const res = await fetch(`/api/open-folder/${appId}`, { method: 'POST' });
+    if (!res.ok) throw new Error('API failed');
     const data = await res.json();
     showToast(data.message || 'ফোল্ডার ওপেন হয়েছে', 'info');
   } catch (err) {
     if (app && app.webUrl) {
       window.open(app.webUrl, '_blank');
       showToast(`${app.name} প্রজেক্ট ওপেন করা হচ্ছে...`, 'info');
-    } else {
-      showToast('লোকাল সার্ভার চালু থাকলে সরাসরি ফোল্ডার খোলা যাবে', 'info');
     }
   }
 };
@@ -406,10 +453,7 @@ function renderBookmarks() {
 
   if (!filtered.length) {
     bookmarksGrid.innerHTML = `
-      <div class="empty-bookmarks" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #94a3b8;">
-        <i class="fa-solid fa-bookmark" style="font-size: 2.5rem; margin-bottom: 12px;"></i><br>
-        <span>${bookmarks.length ? 'খোঁজা বুকমার্কটি পাওয়া যায়নি' : 'এখনো কোনো বুকমার্ক যুক্ত করা হয়নি'}</span>
-      </div>`;
+      <div class="empty-bookmarks" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #94a3b8;"><i class="fa-solid fa-bookmark" style="font-size: 2.5rem; margin-bottom: 12px;"></i><br><span>${bookmarks.length ? 'খোঁজা বুকমার্কটি পাওয়া যায়নি' : 'এখনো কোনো বুকমার্ক যুক্ত করা হয়নি'}</span></div>`;
     return;
   }
 
@@ -456,7 +500,8 @@ window.editBookmark = function(id) {
   const bm = bookmarks.find(b => b.id === id);
   if (!bm) return;
   editingBookmarkId = id;
-  document.getElementById('modalTitle').textContent = 'বুকমার্ক পরিবর্তন করুন';
+  const modalTitle = document.getElementById('modalTitle');
+  if (modalTitle) modalTitle.innerHTML = '<i class="fa-solid fa-bookmark"></i> বুকমার্ক পরিবর্তন করুন';
   document.getElementById('bmTitle').value = bm.title;
   document.getElementById('bmUrl').value = bm.url;
   document.getElementById('bmCategory').value = bm.category || 'website';
@@ -487,7 +532,8 @@ function closeModal() {
     document.getElementById('bmUrl').value = '';
     document.getElementById('bmCategory').value = 'website';
     document.getElementById('bmNote').value = '';
-    document.getElementById('modalTitle').textContent = 'নতুন বুকমার্ক যুক্ত করুন';
+    const modalTitle = document.getElementById('modalTitle');
+    if (modalTitle) modalTitle.innerHTML = '<i class="fa-solid fa-bookmark"></i> নতুন বুকমার্ক যুক্ত করুন';
   }
 }
 
@@ -602,4 +648,6 @@ if (refreshBtn) {
 // ==================== INITIALIZE ====================
 updateBookmarkCountBadge();
 loadApps();
-setInterval(loadApps, 10000);
+if (isLocalServer) {
+  setInterval(loadApps, 10000);
+}
