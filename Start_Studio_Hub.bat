@@ -23,7 +23,7 @@ for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":4500" ^| findstr "LISTENING
 )
 
 echo [2/3] Launching Shakib Studio Hub Server with Auto-Folder Detection...
-start /b "" node server.js
+start "Shakib Studio Hub Server" /min cmd /c "node server.js"
 
 timeout /t 2 /nobreak >nul
 

@@ -1,19 +1,44 @@
 const { app, BrowserWindow, shell } = require('electron');
 const path = require('path');
-const { spawn } = require('child_process');
+const fs = require('fs');
+const { spawn, spawnSync } = require('child_process');
+const net = require('net');
 
 let mainWindow = null;
 let serverProcess = null;
 const SERVER_PORT = 4500;
 
+function getNodeExecutable() {
+  const result = spawnSync('where.exe', ['node.exe'], { encoding: 'utf8', windowsHide: true });
+  const nodePath = (result.stdout || '').split(/\r?\n/).find(Boolean);
+  return nodePath || 'node.exe';
+}
+
+function isServerAvailable(callback) {
+  const probe = net.connect({ host: '127.0.0.1', port: SERVER_PORT });
+  probe.once('connect', () => { probe.destroy(); callback(true); });
+  probe.once('error', () => callback(false));
+}
+
+function waitForServer(callback, attempts = 20) {
+  isServerAvailable((ready) => {
+    if (ready || attempts <= 0) return callback();
+    setTimeout(() => waitForServer(callback, attempts - 1), 250);
+  });
+}
+
 function startServer(callback) {
-  serverProcess = spawn('node', [path.join(__dirname, 'server.js')], {
+  isServerAvailable((alreadyRunning) => {
+    if (alreadyRunning) return callback();
+    serverProcess = spawn(getNodeExecutable(), [path.join(__dirname, 'server.js')], {
     cwd: __dirname,
     stdio: 'ignore',
     windowsHide: true
-  });
+    });
 
-  setTimeout(callback, 800);
+    serverProcess.on('error', () => {});
+    waitForServer(callback);
+  });
 }
 
 try {

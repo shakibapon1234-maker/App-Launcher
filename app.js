@@ -1,12 +1,19 @@
 // ==================== ENVIRONMENT ====================
-const isLocalServer = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const isLocalServer = 
+  window.location.hostname === 'localhost' || 
+  window.location.hostname === '127.0.0.1' ||
+  window.location.port === '4500' ||
+  window.location.hostname.includes('192.168') ||
+  window.location.hostname.includes('10.0');
+
+console.log('[Shakib Hub] Environment:', { hostname: window.location.hostname, port: window.location.port, isLocalServer });
 
 // Update footer mode text
 document.addEventListener('DOMContentLoaded', () => {
   const modeEl = document.getElementById('hubModeText');
   if (modeEl) {
     modeEl.textContent = isLocalServer 
-      ? 'Shakib Studio Hub — Local Server (Port 4500)' 
+      ? `Shakib Studio Hub — Local Server (${window.location.host})` 
       : 'Shakib Studio Hub — GitHub Cloud Live';
   }
 });
@@ -401,16 +408,23 @@ window.launchAppAction = async function(appId, mode, btn) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mode })
     });
-    if (!res.ok) throw new Error('API request failed');
     const data = await res.json();
+    if (!res.ok) {
+      showToast(data.error || 'চালু করতে সমস্যা হয়েছে', 'error');
+      return;
+    }
     showToast(data.message || 'চালু হচ্ছে...', 'success');
     if (mode === 'browser') {
       window.open(data.webUrl || app.webUrl, '_blank');
     }
     setTimeout(loadApps, 1500);
   } catch (err) {
-    window.open(app.webUrl, '_blank');
-    showToast(`${app.name} ওপেন হচ্ছে...`, 'info');
+    if (mode === 'browser') {
+      window.open(app.webUrl, '_blank');
+      showToast(`${app.name} ওপেন হচ্ছে...`, 'info');
+    } else {
+      showToast('ডেস্কটপ অ্যাপ চালু করা যায়নি', 'error');
+    }
   } finally {
     btn.disabled = false;
     btn.innerHTML = orig;
@@ -421,14 +435,14 @@ window.openAppFolder = async function(appId) {
   const app = allApps.find(a => a.id === appId);
   try {
     const res = await fetch(`/api/open-folder/${appId}`, { method: 'POST' });
-    if (!res.ok) throw new Error('API failed');
     const data = await res.json();
-    showToast(data.message || 'ফোল্ডার ওপেন হয়েছে', 'info');
-  } catch (err) {
-    if (app && app.webUrl) {
-      window.open(app.webUrl, '_blank');
-      showToast(`${app.name} প্রজেক্ট ওপেন করা হচ্ছে...`, 'info');
+    if (!res.ok) {
+      showToast(data.error || 'ফোল্ডার পাওয়া যায়নি', 'error');
+      return;
     }
+    showToast(data.message || 'ফোল্ডার ওপেন হয়েছে', 'success');
+  } catch (err) {
+    showToast('সার্ভারের সাথে সংযোগ করা সম্ভব হয়নি', 'error');
   }
 };
 
