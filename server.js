@@ -114,7 +114,9 @@ const APP_DEFINITIONS = [
     accentColor: '#38bdf8',
     description: 'Multi-track video editing, AI Bangla voice typing, automated subtitle generator, transitions, and 3D visual templates.',
     folderCandidates: ['Video-Editor', 'video-editor', 'video_editor', 'VideoEditor', 'video-editor-studio'],
-    launchCmdCandidates: ['start-video-editor.bat', 'start.bat', 'Start-VideoEditor.ps1'],
+    // start-video-editor.bat is a browser/server launcher.  The hub's Desktop
+    // button must use the Electron launcher instead.
+    launchCmdCandidates: ['start.bat'],
     webPort: 4000,
     webUrl: 'https://shakibapon1234-maker.github.io/Video-Editor/',
     localUrl: 'http://localhost:4000'
@@ -148,7 +150,9 @@ const APP_DEFINITIONS = [
     accentColor: '#ef4444',
     description: 'Professional desktop PDF studio: advanced page editing, offline conversion, watermark, e-sign, and OCR integration.',
     folderCandidates: ['Antigravity-PDF-Pro-1', 'antigravity-pdf-pro', 'PDF-Pro', 'AntigravityPDFPro'],
-    launchCmdCandidates: ['FAST_DEV.bat', 'DEV_START.bat', 'start.bat', 'RUN_APP.bat', 'start_desktop.bat'],
+    // Use the packaged desktop application.  The development launchers can
+    // open the development/licensing flow instead of the normal offline app.
+    launchCmdCandidates: ['RUN_APP.bat'],
     webPort: 3000,
     webUrl: 'https://shakibapon1234-maker.github.io/Antigravity-PDF-Pro-1/',
     localUrl: 'http://localhost:3000'
