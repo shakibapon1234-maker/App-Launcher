@@ -6,7 +6,6 @@ const net = require('net');
 const { exec, spawn } = require('child_process');
 
 const PORT = 4500;
-const runningProcesses = {};
 const miniServers = {};
 
 const MIME_MAP = {
@@ -395,7 +394,7 @@ function getResolvedApps() {
       path: resolvedPath,
       launchCmd: resolvedBat,
       isInstalledLocally: !!resolvedPath,
-      isRunning: !!runningProcesses[app.id]
+      isRunning: false
     };
   });
 }
@@ -425,18 +424,35 @@ function checkPortInUse(port) {
   });
 }
 
+function getLocalProcessMarkers() {
+  return new Promise((resolve) => {
+    // A launcher-hosted mini server is not an open application.  Query real
+    // Windows processes instead, checking both command line and executable
+    // path so Electron apps are detected after their wrapper .bat exits.
+    const command = 'Get-CimInstance Win32_Process | Select-Object CommandLine,ExecutablePath | ConvertTo-Json -Compress';
+    exec(`powershell.exe -NoProfile -Command "${command}"`, { windowsHide: true, maxBuffer: 2 * 1024 * 1024 }, (error, stdout) => {
+      if (error || !stdout.trim()) return resolve([]);
+      try {
+        const parsed = JSON.parse(stdout);
+        const processes = Array.isArray(parsed) ? parsed : [parsed];
+        resolve(processes.map((proc) => `${proc.CommandLine || ''} ${proc.ExecutablePath || ''}`.toLowerCase()));
+      } catch (_) {
+        resolve([]);
+      }
+    });
+  });
+}
+
 async function getResolvedAppsWithStatus() {
   const apps = getResolvedApps();
-  const list = await Promise.all(
-    apps.map(async (app) => {
-      const portLive = app.webPort ? await checkPortInUse(app.webPort) : false;
-      return {
-        ...app,
-        isRunning: !!(runningProcesses[app.id] || portLive)
-      };
-    })
-  );
-  return list;
+  const processMarkers = await getLocalProcessMarkers();
+  return apps.map((app) => {
+    const appPath = app.path ? app.path.toLowerCase() : '';
+    return {
+      ...app,
+      isRunning: !!appPath && processMarkers.some((marker) => marker.includes(appPath))
+    };
+  });
 }
 
 function launchApp(appId, mode, callback) {
@@ -459,7 +475,6 @@ function launchApp(appId, mode, callback) {
         env: launchEnv
       });
       child.unref();
-      runningProcesses[appId] = true;
       return callback(null, { 
         success: true, 
         mode: 'desktop',
@@ -478,7 +493,6 @@ function launchApp(appId, mode, callback) {
   // Browser mode:
   if (app.path && app.webPort) {
     ensureMiniServer(app);
-    runningProcesses[appId] = true;
     return callback(null, { 
       success: true, 
       mode: 'browser',
