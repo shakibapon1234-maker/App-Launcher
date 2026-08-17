@@ -1,35 +1,39 @@
 @echo off
-title Shakib Studio Hub - Local Launcher
+title Shakib Studio Hub - Local Controller
 cd /d "%~dp0"
 
 echo ========================================================
-echo         Shakib Studio Hub - Central Control
+echo         Shakib Studio Hub - Starting Server
 echo ========================================================
 echo.
 
+:: Check if Node is installed
 where node >nul 2>nul
 if %errorlevel% neq 0 (
-    echo [ERROR] Node.js is not installed on this PC!
-    echo Please install Node.js from https://nodejs.org/ to use Local Desktop features.
-    echo.
-    echo Opening Cloud Hub in your browser instead...
-    start https://shakibapon1234-maker.github.io/App-Launcher/
+    echo [ERROR] Node.js is not found on this computer!
+    echo Please install Node.js from https://nodejs.org/
     pause
     exit /b
 )
 
-echo [1/2] Starting Studio Hub Local Server on Port 4500...
+:: Kill any old server on port 4500 so new code runs fresh
+echo [1/3] Refreshing background server on Port 4500...
+for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":4500" ^| findstr "LISTENING"') do (
+    taskkill /F /PID %%a >nul 2>nul
+)
+
+echo [2/3] Launching Shakib Studio Hub Server with Auto-Folder Detection...
 start /b "" node server.js
 
 timeout /t 2 /nobreak >nul
 
-echo [2/2] Opening Studio Hub in Browser...
+echo [3/3] Opening Studio Hub in your Browser...
 start http://localhost:4500
 
 echo.
 echo ========================================================
-echo  Shakib Studio Hub is ACTIVE! (http://localhost:4500)
-echo  Keep this window minimized while using Studio Apps.
+echo   Shakib Studio Hub is ACTIVE! (http://localhost:4500)
+echo   Local desktop features and folder links are now ready.
 echo ========================================================
 echo.
 pause
