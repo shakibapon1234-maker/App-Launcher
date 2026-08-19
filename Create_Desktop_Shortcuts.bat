@@ -2,7 +2,7 @@
 title Create Desktop Shortcut for Shakib Studio Hub
 cd /d "%~dp0"
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$ws = New-Object -ComObject WScript.Shell; $desktop = [System.Environment]::GetFolderPath('Desktop'); $s = $ws.CreateShortcut((Join-Path $desktop 'Shakib Studio Hub.lnk')); $s.TargetPath = '%~dp0Launch_Desktop_App.bat'; $s.WorkingDirectory = '%~dp0'; $s.IconLocation = '%~dp0icon.png'; $s.Description = 'Shakib Studio Hub Desktop'; $s.Save()"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ws = New-Object -ComObject WScript.Shell; $desktop = [System.Environment]::GetFolderPath('Desktop'); $s = $ws.CreateShortcut((Join-Path $desktop 'Shakib Studio Hub.lnk')); $s.TargetPath = '%~dp0Launch_Desktop_App.bat'; $s.WorkingDirectory = '%~dp0'; $s.IconLocation = '%~dp0icon.ico,0'; $s.Description = 'Shakib Studio Hub Desktop'; $s.Save()"
 
 echo ========================================================
 echo   Desktop shortcut 'Shakib Studio Hub' created!
