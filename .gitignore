@@ -1,0 +1,7 @@
+# Installed locally by npm; recreated by the New PC setup script.
+node_modules/
+
+# Local operating-system and build output.
+dist/
+out/
+*.log

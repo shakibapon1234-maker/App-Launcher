@@ -7,6 +7,13 @@ const { exec, spawn } = require('child_process');
 
 const PORT = 4500;
 const miniServers = {};
+// User-selected app locations are kept outside the project folder, so updates
+// to the launcher do not overwrite a PC's local configuration.
+const APP_PATHS_FILE = path.join(
+  process.env.APPDATA || path.join(os.homedir(), 'AppData', 'Roaming'),
+  'Shakib Studio Hub',
+  'app-paths.json'
+);
 
 const MIME_MAP = {
   '.html': 'text/html; charset=utf-8',
@@ -31,6 +38,36 @@ const MIME_MAP = {
 
 process.on('uncaughtException', (err) => console.error('[Shakib Hub] Uncaught Exception:', err.message));
 process.on('unhandledRejection', (reason) => console.error('[Shakib Hub] Unhandled Rejection:', reason));
+
+function loadAppPathOverrides() {
+  try {
+    const saved = JSON.parse(fs.readFileSync(APP_PATHS_FILE, 'utf8'));
+    return saved && typeof saved === 'object' ? saved : {};
+  } catch (_) {
+    return {};
+  }
+}
+
+function saveAppPathOverrides(overrides) {
+  fs.mkdirSync(path.dirname(APP_PATHS_FILE), { recursive: true });
+  fs.writeFileSync(APP_PATHS_FILE, JSON.stringify(overrides, null, 2), 'utf8');
+}
+
+function getLaunchCmdAtPath(folderPath, launchCmdCandidates) {
+  if (!launchCmdCandidates) return null;
+  return launchCmdCandidates.find(cmd => fs.existsSync(path.join(folderPath, cmd))) || null;
+}
+
+function isUsableProjectFolder(folderPath, app) {
+  try {
+    if (!folderPath || !fs.statSync(folderPath).isDirectory()) return false;
+    return !!getLaunchCmdAtPath(folderPath, app.launchCmdCandidates) ||
+      fs.existsSync(path.join(folderPath, 'index.html')) ||
+      fs.existsSync(path.join(folderPath, 'website', 'index.html'));
+  } catch (_) {
+    return false;
+  }
+}
 
 function findProjectFolder(candidateNames, launchCmdCandidates) {
   const userHome = os.homedir();
@@ -375,24 +412,20 @@ function ensureMiniServer(app) {
 }
 
 function getResolvedApps() {
+  const pathOverrides = loadAppPathOverrides();
   return APP_DEFINITIONS.map(app => {
-    const resolvedPath = app.folderCandidates ? findProjectFolder(app.folderCandidates, app.launchCmdCandidates) : null;
-    let resolvedBat = null;
-
-    if (resolvedPath && app.launchCmdCandidates) {
-      for (const cmd of app.launchCmdCandidates) {
-        const p = path.join(resolvedPath, cmd);
-        if (fs.existsSync(p)) {
-          resolvedBat = cmd;
-          break;
-        }
-      }
-    }
+    const selectedPath = pathOverrides[app.id];
+    const usesSelectedPath = isUsableProjectFolder(selectedPath, app);
+    const resolvedPath = usesSelectedPath
+      ? selectedPath
+      : (app.folderCandidates ? findProjectFolder(app.folderCandidates, app.launchCmdCandidates) : null);
+    const resolvedBat = resolvedPath ? getLaunchCmdAtPath(resolvedPath, app.launchCmdCandidates) : null;
 
     return {
       ...app,
       path: resolvedPath,
       launchCmd: resolvedBat,
+      pathSource: usesSelectedPath ? 'selected' : (resolvedPath ? 'automatic' : null),
       isInstalledLocally: !!resolvedPath,
       isRunning: false
     };
@@ -528,6 +561,45 @@ function openFolder(appId, callback) {
   }
 }
 
+function selectAppFolder(appId, callback) {
+  const app = APP_DEFINITIONS.find(item => item.id === appId);
+  if (!app) return callback(new Error('App not found'));
+
+  // This dialog appears only after the user clicks the folder-select button.
+  const pickerScript = [
+    'Add-Type -AssemblyName System.Windows.Forms',
+    '$dialog = New-Object System.Windows.Forms.FolderBrowserDialog',
+    `$dialog.Description = 'Select the ${app.name} project folder'`,
+    '$dialog.ShowNewFolderButton = $false',
+    'if ($dialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) { [Console]::Out.Write($dialog.SelectedPath) }'
+  ].join('; ');
+  const picker = spawn('powershell.exe', ['-NoProfile', '-STA', '-Command', pickerScript], {
+    windowsHide: false
+  });
+  let selectedPath = '';
+  let pickerError = '';
+  picker.stdout.on('data', chunk => selectedPath += chunk.toString());
+  picker.stderr.on('data', chunk => pickerError += chunk.toString());
+  picker.on('error', err => callback(new Error(`Folder picker চালু করা যায়নি: ${err.message}`)));
+  picker.on('close', code => {
+    selectedPath = selectedPath.trim();
+    if (!selectedPath) {
+      return callback(null, { cancelled: true, message: 'ফোল্ডার নির্বাচন বাতিল করা হয়েছে' });
+    }
+    if (code !== 0 || !isUsableProjectFolder(selectedPath, app)) {
+      return callback(new Error(`নির্বাচিত folder-টি ${app.name} project হিসেবে ব্যবহার করা যাচ্ছে না। start file বা index.html থাকা project folder নির্বাচন করুন। ${pickerError.trim()}`));
+    }
+    try {
+      const overrides = loadAppPathOverrides();
+      overrides[app.id] = selectedPath;
+      saveAppPathOverrides(overrides);
+      callback(null, { success: true, path: selectedPath, message: `${app.name} folder মনে রাখা হয়েছে` });
+    } catch (err) {
+      callback(new Error(`Folder location সংরক্ষণ করা যায়নি: ${err.message}`));
+    }
+  });
+}
+
 const server = http.createServer((req, res) => {
   const parsedUrl = new URL(req.url, `http://localhost:${PORT}`);
   const pathname = parsedUrl.pathname;
@@ -582,6 +654,20 @@ const server = http.createServer((req, res) => {
   if (pathname.startsWith('/api/open-folder/') && req.method === 'POST') {
     const appId = pathname.replace('/api/open-folder/', '');
     openFolder(appId, (err, result) => {
+      if (err) {
+        res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ error: err.message }));
+      } else {
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify(result));
+      }
+    });
+    return;
+  }
+
+  if (pathname.startsWith('/api/select-folder/') && req.method === 'POST') {
+    const appId = decodeURIComponent(pathname.replace('/api/select-folder/', ''));
+    selectAppFolder(appId, (err, result) => {
       if (err) {
         res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({ error: err.message }));

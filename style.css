@@ -366,6 +366,16 @@ body {
   background: rgba(255, 255, 255, 0.12);
 }
 
+.btn-select-folder {
+  color: #7dd3fc;
+}
+
+.btn-select-folder:hover {
+  color: #e0f2fe;
+  border-color: rgba(56, 189, 248, 0.7);
+  background: rgba(56, 189, 248, 0.14);
+}
+
 .btn-launch {
   flex: 1;
   border: none;

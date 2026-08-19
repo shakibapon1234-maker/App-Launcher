@@ -7,6 +7,9 @@
     "start": "node server.js",
     "desktop": "electron ."
   },
+  "devDependencies": {
+    "electron": "^31.7.7"
+  },
   "keywords": [
     "launcher",
     "hub",

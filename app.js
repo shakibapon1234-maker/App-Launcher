@@ -360,6 +360,9 @@ function renderApps() {
     const folderBtn = isLocalServer ? `
       <button class="btn-open-folder" title="লোকাল ফোল্ডার খুলুন" onclick="openAppFolder('${app.id}')">
         <i class="fa-solid fa-folder-open"></i>
+      </button>
+      <button class="btn-open-folder btn-select-folder" title="Select or change this app folder" onclick="selectAppFolder('${app.id}', this)">
+        <i class="fa-solid fa-folder-plus"></i>
       </button>` : `
       <a href="${app.webUrl}" target="_blank" rel="noopener noreferrer" class="btn-open-folder" title="প্রজেক্ট লিঙ্ক ওপেন করুন" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">
         <i class="fa-solid fa-arrow-up-right-from-square"></i>
@@ -443,6 +446,29 @@ window.openAppFolder = async function(appId) {
     showToast(data.message || 'ফোল্ডার ওপেন হয়েছে', 'success');
   } catch (err) {
     showToast('সার্ভারের সাথে সংযোগ করা সম্ভব হয়নি', 'error');
+  }
+};
+
+window.selectAppFolder = async function(appId, btn) {
+  const original = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i>`;
+  try {
+    const res = await fetch(`/api/select-folder/${encodeURIComponent(appId)}`, { method: 'POST' });
+    const data = await res.json();
+    if (!res.ok) {
+      showToast(data.error || 'Unable to save folder location', 'error');
+      return;
+    }
+    if (!data.cancelled) {
+      showToast(data.message || 'Folder location saved', 'success');
+      await loadApps();
+    }
+  } catch (_) {
+    showToast('Folder selection could not be opened', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = original;
   }
 };
 
